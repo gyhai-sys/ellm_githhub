@@ -295,6 +295,7 @@ class EpisodeName:
 
   def step(self, action):
     obs, reward, done, info = self._env.step(action)
+    print(f"{self.__class__.__name__} reward:{reward}")
     self._length += 1
     if done:
       self._timestamp = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')

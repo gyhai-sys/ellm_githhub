@@ -2,12 +2,13 @@ import collections
 import os
 import pickle as pkl
 import time
-import openai
+from openai import OpenAI
 import wandb
 import pathlib
 import fcntl
 import time
 import numpy as np
+import openai
 
 # Language models provided by OpenAI. They are ranked from best to worst (quality-wise)
 LANGUAGE_MODELS = [
@@ -357,12 +358,21 @@ class GPTLanguageModel(LanguageModel):
                 attempts = 0
                 while response is None:
                     try:
+                        '''
                         response = openai.Completion.create(engine=self.lm,
                                                             prompt=prompt,
                                                             max_tokens=self.max_tokens,
                                                             stop=self.stop,
                                                             temperature=self.temperature,
                                                             frequency_penalty=0)
+                        '''
+                        self.lm = 'Qwen/Qwen2.5-7B-Instruct'
+                        client = OpenAI()
+                        response = client.chat.completions.create(
+                            model=self.lm,
+                            messages=[
+                            {"role": "user", "content": prompt}]).choices[0].message.content
+
                     except Exception as e:
                         self.api_key_idx = (self.api_key_idx + 1) % len(self.api_key_list)
                         openai.api_key = self.api_key_list[self.api_key_idx]
@@ -374,7 +384,7 @@ class GPTLanguageModel(LanguageModel):
                         print('attempts', attempts)
                         time.sleep(4)
                 self.attempts = .99 * self.attempts + .01 * attempts
-                response = response.choices[0]['text']
+                # response = response.choices[0].message.content
             new_api_query = True
         self.all_queries += 1
         if self.verbose: print("QUERIES SO FAR", self.all_queries, "cached", self.cached_queries, "api", self.api_queries)

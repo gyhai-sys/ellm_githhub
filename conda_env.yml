@@ -252,7 +252,7 @@ dependencies:
     - smmap==5.0.0
     - submitit==1.4.1
     - tabulate==0.8.9
-    - tb-nightly==2.9.0a20220213
+#   -tb-nightly==2.9.0a20220213
     - tenacity==8.0.1
     - tensorboard-data-server==0.6.1
     - tensorboard-plugin-wit==1.8.1

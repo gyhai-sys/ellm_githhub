@@ -22,6 +22,7 @@ class CrafterGoalWrapper:
         self.prev_goal = ""
         self.use_sbert_sim = False
         if self.env.action_space_type == 'harder':
+            # 记录当前已经达到的目标
             self.goals_so_far = dict.fromkeys(self.env.good_action_names) # for Eval purposes only
         else:
             self.goals_so_far = dict.fromkeys(self.env.action_names) # for Eval purposes only
@@ -414,6 +415,7 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
             self.goals_so_far[task] = None
             return
 
+        # 获取环境描述
         text_obs, inv_status = self.env.text_obs()
         if self._use_state_captioner:
             state_caption = self.state_captioner(self.prev_info)
